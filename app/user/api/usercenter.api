@@ -12,3 +12,5 @@ import (
 	"user/login.api"
 )
 
+// 生成代码文件
+// goctl api go  -api .\app\user\api\usercenter.api --dir .\app\user\
