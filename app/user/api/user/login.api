@@ -1,0 +1,45 @@
+syntax = "v1"
+
+info (
+	title: "注册登录相关处理"
+	desc: ""
+	author: "ZaiNeng"
+	email: "2878428463@qq.com"
+)
+
+type (
+	UserRegisterReq {
+		Mobile   string `json:"mobile"`
+		Password string `json:"password"`
+        Code     string `json:"code"`
+	}
+
+)
+
+type (
+	UserLoginReq {
+		Mobile   string `json:"mobile"`
+		Password string `json:"password"`
+	}
+
+	UserLoginResp {
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshAfter int64  `json:"refreshAfter"`
+	}
+)
+
+@server(
+	prefix: capi/user
+	group: login
+)
+service usercenter {
+	
+	@doc "register"
+	@handler register
+	post /register (UserRegisterReq) returns ()
+	
+	@doc "login"
+	@handler login
+	post /login (UserLoginReq) returns (UserLoginResp)
+}
