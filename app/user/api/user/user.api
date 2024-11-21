@@ -7,6 +7,3 @@ info(
 	email: "13247629622@163.com"
 	version: "v1"
 )
-
-// 生成代码文件
-// goctl api go  -api .\app\user\api\usercenter.api --dir .\app\user\
