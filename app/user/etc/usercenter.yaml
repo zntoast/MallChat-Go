@@ -1,0 +1,22 @@
+Name: usercenter
+Host: 0.0.0.0
+Port: 8888
+DB:
+  DataSource: root:password@tcp(127.0.0.1:3306)/mallchatgo
+
+Cache:
+  - Host: 127.0.0.1:6379
+    Pass: 
+
+Auth:
+  AccessSecret: mallchat-go-jwt-key
+  AccessExpire: 7200  # 2小时
+
+Redis:
+  Host: 127.0.0.1:6379
+  Pass:
+
+Upload:
+  SaveDir: ./uploads
+  MaxSize: 5  # 5MB
+  BaseUrl: http://localhost:8888/static
