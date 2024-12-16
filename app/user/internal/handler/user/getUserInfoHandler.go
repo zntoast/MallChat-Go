@@ -3,9 +3,10 @@ package user
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"mallchat-go/app/user/internal/logic/user"
 	"mallchat-go/app/user/internal/svc"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 // 获取用户信息

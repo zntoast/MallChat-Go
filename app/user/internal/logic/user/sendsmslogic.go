@@ -48,7 +48,6 @@ func (l *SendSmsLogic) SendSms(req *types.SendSmsReq) (resp *types.SendSmsResp, 
 		return nil, fmt.Errorf("发送验证码失败")
 	}
 
-	// TODO: 调用短信服务发送验证码
 	// 这里先返回验证码，方便测试
 	return &types.SendSmsResp{
 		Code: code,
