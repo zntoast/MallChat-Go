@@ -14,6 +14,11 @@ type (
         Code     string `json:"code"`
 	}
 
+	UserRegisterResp {
+		AccessToken  string `json:"accessToken"`
+		AccessExpire int64  `json:"accessExpire"`
+		RefreshAfter int64  `json:"refreshAfter"`
+	}
 )
 
 type (
@@ -26,6 +31,7 @@ type (
 		AccessToken  string `json:"accessToken"`
 		AccessExpire int64  `json:"accessExpire"`
 		RefreshAfter int64  `json:"refreshAfter"`
+		UserInfo     User   `json:"userInfo"`
 	}
 )
 
@@ -37,7 +43,7 @@ service usercenter {
 	
 	@doc "register"
 	@handler register
-	post /register (UserRegisterReq) returns ()
+	post /register (UserRegisterReq) returns (UserRegisterResp)
 	
 	@doc "login"
 	@handler login

@@ -7,3 +7,92 @@ info(
 	email: "13247629622@163.com"
 	version: "v1"
 )
+
+type User {
+	Id         int64  `json:"id"`
+	Mobile     string `json:"mobile"`
+	Nickname   string `json:"nickname"`
+	Avatar     string `json:"avatar"`
+	CreateTime int64  `json:"createTime"`
+}
+
+type (
+	// 发送验证码请求
+	SendSmsReq {
+		Mobile string `json:"mobile"`
+		Scene  string `json:"scene"` // register-注册 reset-重置密码
+	}
+
+	SendSmsResp {
+		Code string `json:"code"` // 测试环境可返回验证码
+	}
+)
+
+type (
+	// 重置密码请求
+	ResetPasswordReq {
+		Mobile      string `json:"mobile"`
+		NewPassword string `json:"newPassword"`
+		Code        string `json:"code"`
+	}
+)
+
+type (
+	UpdateUserReq {
+		Nickname string `json:"nickname,optional"`
+		Avatar   string `json:"avatar,optional"`
+	}
+)
+
+type (
+	GetUserInfoResp {
+		Id         int64  `json:"id"`
+		Mobile     string `json:"mobile"`
+		Nickname   string `json:"nickname"`
+		Avatar     string `json:"avatar"`
+		CreateTime int64  `json:"createTime"`
+	}
+)
+
+type (
+	UploadAvatarReq {
+		File string `form:"file,optional"`
+	}
+
+	UploadAvatarResp {
+		Url string `json:"url"`
+	}
+)
+
+@server(
+	prefix: capi/user
+	group: user
+)
+service usercenter {
+	@doc "发送验证码"
+	@handler sendSms
+	post /sms/send (SendSmsReq) returns (SendSmsResp)
+	
+	@doc "重置密码"
+	@handler resetPassword
+	post /password/reset (ResetPasswordReq) returns ()
+}
+
+@server(
+	prefix: capi/user
+	group: user
+	middleware: Auth  // 需要认证的接口单独一组
+)
+service usercenter {
+	@doc "获取用户信息"
+	@handler getUserInfo
+	get /info returns (GetUserInfoResp)
+
+	@doc "更新用户信息"
+	@handler updateUser
+	post /update (UpdateUserReq) returns ()
+
+	@doc "上传头像"
+	@handler uploadAvatar
+	post /avatar/upload (UploadAvatarReq) returns (UploadAvatarResp)
+}
