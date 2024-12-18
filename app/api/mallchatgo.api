@@ -12,5 +12,6 @@ import (
 	"user/login.api"
 	"im/im.api"
 	"im/ws.api"
+	"im/group.api"
 )
 

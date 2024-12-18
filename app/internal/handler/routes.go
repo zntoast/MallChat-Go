@@ -56,6 +56,27 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 	)
 
 	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Auth},
+			[]rest.Route{
+				{
+					// 创建群组
+					Method:  http.MethodPost,
+					Path:    "/group/create",
+					Handler: message.CreateGroupHandler(serverCtx),
+				},
+				{
+					// 加入群组
+					Method:  http.MethodPost,
+					Path:    "/group/join",
+					Handler: message.JoinGroupHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/capi/im"),
+	)
+
+	server.AddRoutes(
 		[]rest.Route{
 			{
 				// 重置密码

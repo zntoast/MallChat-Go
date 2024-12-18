@@ -3,6 +3,14 @@
 
 package types
 
+type CreateGroupReq struct {
+	GroupName string `json:"groupName"` // 群组名称
+}
+
+type CreateGroupResp struct {
+	GroupId int64 `json:"groupId"` // 群组ID
+}
+
 type GetMessageListReq struct {
 	ReceiverId    int64 `json:"receiverId"`
 	LastMessageId int64 `json:"lastMessageId,optional"` // 上一页最后一条消息ID
@@ -20,6 +28,15 @@ type GetUserInfoResp struct {
 	Nickname   string `json:"nickname"`
 	Avatar     string `json:"avatar"`
 	CreateTime int64  `json:"createTime"`
+}
+
+type JoinGroupReq struct {
+	GroupId int64 `json:"groupId"` // 群组ID
+	UserId  int64 `json:"userId"`  // 用户ID
+}
+
+type JoinGroupResp struct {
+	Message string `json:"message"` // 加入群组成功消息
 }
 
 type Message struct {
