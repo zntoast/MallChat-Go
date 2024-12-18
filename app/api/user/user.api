@@ -68,7 +68,7 @@ type (
 	prefix: capi/user
 	group: user
 )
-service usercenter {
+service mallchatgo {
 	@doc "发送验证码"
 	@handler sendSms
 	post /sms/send (SendSmsReq) returns (SendSmsResp)
@@ -83,7 +83,7 @@ service usercenter {
 	group: user
 	middleware: Auth  // 需要认证的接口单独一组
 )
-service usercenter {
+service mallchatgo {
 	@doc "获取用户信息"
 	@handler getUserInfo
 	get /info returns (GetUserInfoResp)

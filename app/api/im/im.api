@@ -44,8 +44,8 @@ type (
     group: message
     middleware: Auth
 )
-service im {
-    @doc "发��消息"
+service mallchatgo {
+    @doc "发送消息"
     @handler sendMessage
     post /message/send (SendMessageReq) returns (SendMessageResp)
     

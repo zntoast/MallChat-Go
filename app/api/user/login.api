@@ -39,7 +39,7 @@ type (
 	prefix: capi/user
 	group: login
 )
-service usercenter {
+service mallchatgo {
 	
 	@doc "register"
 	@handler register
