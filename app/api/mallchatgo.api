@@ -1,8 +1,8 @@
 syntax = "v1"
 
 info (
-	title:  "用户服务"
-	desc:   "用户相关服务"
+	title:  "mallchat"
+	desc:   "im及时通信服务"
 	author: "ZaiNeng"
 	email:  "2878428463@qq.com"
 )
@@ -10,6 +10,10 @@ info (
 import (
 	"user/user.api"
 	"user/login.api"
+
+	"im/im.api"
+
+
 )
 
 // 生成代码文件
