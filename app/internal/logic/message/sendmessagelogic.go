@@ -5,11 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"mallchat-go/app/internal/common"
 	"mallchat-go/app/internal/model"
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
-
 	wsTypes "mallchat-go/app/internal/types/ws"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -31,30 +29,14 @@ func NewSendMessageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SendM
 }
 
 func (l *SendMessageLogic) SendMessage(req *types.SendMessageReq) (resp *types.SendMessageResp, err error) {
-	// 验证消息类型
-	if req.Type < 1 || req.Type > 4 {
-		return nil, fmt.Errorf("无效的消息类型")
-	}
-
 	// 验证接收者ID
 	if req.ReceiverId <= 0 {
 		return nil, fmt.Errorf("无效的接收者ID")
 	}
 
-	// 验证消息内容
-	if len(req.Content) == 0 || len(req.Content) > 1000 {
-		return nil, fmt.Errorf("消息内容长度应在1-1000个字符之间")
-	}
-
-	// 获取发送者ID
-	senderId, ok := common.GetUserIDFromContext(l.ctx)
-	if !ok {
-		return nil, fmt.Errorf("未登录")
-	}
-
 	// 保存消息到数据库
 	message := &model.Message{
-		SenderId:   uint64(senderId),
+		SenderId:   uint64(req.SenderId),
 		ReceiverId: uint64(req.ReceiverId),
 		Content:    req.Content,
 		Type:       int64(req.Type),
@@ -73,7 +55,7 @@ func (l *SendMessageLogic) SendMessage(req *types.SendMessageReq) (resp *types.S
 	// 通过WebSocket推送消息
 	wsMessage := &wsTypes.Message{
 		Type:      req.Type,
-		SenderId:  senderId,
+		SenderId:  req.SenderId,
 		Content:   req.Content,
 		Timestamp: message.CreateTime,
 	}

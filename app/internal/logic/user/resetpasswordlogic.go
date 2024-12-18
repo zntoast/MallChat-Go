@@ -42,7 +42,6 @@ func (l *ResetPasswordLogic) ResetPassword(req *types.ResetPasswordReq) error {
 		return fmt.Errorf("无效的验证码")
 	}
 
-	// TODO: 验证验证码是否正确
 	code, err := l.svcCtx.Redis.GetVerifyCode(l.ctx, req.Mobile, "reset")
 	if err != nil || code != req.Code {
 		return fmt.Errorf("验证码错误或已过期")

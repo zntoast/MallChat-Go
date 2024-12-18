@@ -35,29 +35,27 @@ func (l *GetMessageListLogic) GetMessageList(req *types.GetMessageListReq) (resp
 		req.Size = 20 // 使用默认值
 	}
 
-	// TODO: 从数据库查询消息列表
-	// messages, hasMore, err := l.svcCtx.MessageModel.List(
-	//     l.ctx.Value("userId").(int64),
-	//     req.ReceiverId,
-	//     req.LastMessageId,
-	//     int(req.Size),
-	// )
-	// if err != nil {
-	//     return nil, err
-	// }
+	// 从数据库查询消息列表
+	messages, hasMore, err := l.svcCtx.MessageModel.List(l.ctx, uint64(req.ReceiverId), req.LastMessageId, int(req.Size))
+	if err != nil {
+		return nil, err
+	}
 
-	// 模拟返回数据
+	// 转换消息类型
+	var responseMessages []types.Message
+	for _, msg := range messages {
+		responseMessages = append(responseMessages, types.Message{
+			Id:         int64(msg.Id),
+			SenderId:   int64(msg.SenderId),
+			ReceiverId: int64(msg.ReceiverId),
+			Content:    msg.Content,
+			Type:       int32(msg.Type),
+			CreateTime: msg.CreateTime,
+		})
+	}
+
 	return &types.GetMessageListResp{
-		Messages: []types.Message{
-			{
-				Id:         1,
-				SenderId:   1,
-				ReceiverId: req.ReceiverId,
-				Content:    "你好",
-				Type:       1,
-				CreateTime: 1678900000,
-			},
-		},
-		HasMore: false,
+		Messages: responseMessages,
+		HasMore:  hasMore,
 	}, nil
 }

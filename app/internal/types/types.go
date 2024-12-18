@@ -41,6 +41,7 @@ type SendMessageReq struct {
 	ReceiverId int64  `json:"receiverId"`
 	Content    string `json:"content"`
 	Type       int32  `json:"type"`
+	SenderId   int64  `json:"senderId"`
 }
 
 type SendMessageResp struct {

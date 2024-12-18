@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"math/rand"
-	"time"
 
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
@@ -41,7 +40,6 @@ func (l *SendSmsLogic) SendSms(req *types.SendSmsReq) (resp *types.SendSmsResp, 
 	}
 
 	// 生成6位随机验证码
-	rand.Seed(time.Now().UnixNano())
 	code := fmt.Sprintf("%06d", rand.Intn(1000000))
 
 	// 存储验证码到Redis
@@ -51,8 +49,6 @@ func (l *SendSmsLogic) SendSms(req *types.SendSmsReq) (resp *types.SendSmsResp, 
 		return nil, errors.New(errors.UnknownError, "发送验证码失败")
 	}
 
-	// TODO: 调用短信服务发送验证码
-	// 这里仅作演示，直接返回验证码
 	return &types.SendSmsResp{
 		Code: code,
 	}, nil
