@@ -6,6 +6,7 @@ package handler
 import (
 	"net/http"
 
+	group "mallchat-go/app/internal/handler/group"
 	login "mallchat-go/app/internal/handler/login"
 	message "mallchat-go/app/internal/handler/message"
 	user "mallchat-go/app/internal/handler/user"
@@ -16,6 +17,27 @@ import (
 )
 
 func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Auth},
+			[]rest.Route{
+				{
+					// 创建群组
+					Method:  http.MethodPost,
+					Path:    "/group/create",
+					Handler: group.CreateGroupHandler(serverCtx),
+				},
+				{
+					// 加入群组
+					Method:  http.MethodPost,
+					Path:    "/group/join",
+					Handler: group.JoinGroupHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/capi/im"),
+	)
+
 	server.AddRoutes(
 		[]rest.Route{
 			{
@@ -49,27 +71,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Method:  http.MethodPost,
 					Path:    "/message/send",
 					Handler: message.SendMessageHandler(serverCtx),
-				},
-			}...,
-		),
-		rest.WithPrefix("/capi/im"),
-	)
-
-	server.AddRoutes(
-		rest.WithMiddlewares(
-			[]rest.Middleware{serverCtx.Auth},
-			[]rest.Route{
-				{
-					// 创建群组
-					Method:  http.MethodPost,
-					Path:    "/group/create",
-					Handler: message.CreateGroupHandler(serverCtx),
-				},
-				{
-					// 加入群组
-					Method:  http.MethodPost,
-					Path:    "/group/join",
-					Handler: message.JoinGroupHandler(serverCtx),
 				},
 			}...,
 		),

@@ -33,7 +33,7 @@ type (
 
 @server(
     prefix: capi/im
-    group: message
+    group: group
     middleware: Auth
 )
 service mallchatgo {

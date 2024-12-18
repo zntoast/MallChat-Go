@@ -1,10 +1,10 @@
-package message
+package group
 
 import (
 	"net/http"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
-	"mallchat-go/app/internal/logic/message"
+	"mallchat-go/app/internal/logic/group"
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
 )
@@ -18,7 +18,7 @@ func CreateGroupHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := message.NewCreateGroupLogic(r.Context(), svcCtx)
+		l := group.NewCreateGroupLogic(r.Context(), svcCtx)
 		resp, err := l.CreateGroup(&req)
 		if err != nil {
 			httpx.ErrorCtx(r.Context(), w, err)
