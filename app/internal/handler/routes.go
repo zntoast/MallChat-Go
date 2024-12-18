@@ -9,6 +9,7 @@ import (
 	login "mallchat-go/app/internal/handler/login"
 	message "mallchat-go/app/internal/handler/message"
 	user "mallchat-go/app/internal/handler/user"
+	ws "mallchat-go/app/internal/handler/ws"
 	"mallchat-go/app/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
@@ -97,5 +98,20 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			}...,
 		),
 		rest.WithPrefix("/capi/user"),
+	)
+
+	server.AddRoutes(
+		rest.WithMiddlewares(
+			[]rest.Middleware{serverCtx.Auth},
+			[]rest.Route{
+				{
+					// WebSocket连接
+					Method:  http.MethodGet,
+					Path:    "/ws",
+					Handler: ws.ConnectHandler(serverCtx),
+				},
+			}...,
+		),
+		rest.WithPrefix("/capi/im"),
 	)
 }

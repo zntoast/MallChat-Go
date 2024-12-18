@@ -2,6 +2,7 @@ package message
 
 import (
 	"context"
+	"fmt"
 
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
@@ -25,7 +26,38 @@ func NewGetMessageListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetMessageListLogic) GetMessageList(req *types.GetMessageListReq) (resp *types.GetMessageListResp, err error) {
-	// todo: add your logic here and delete this line
+	// 验证参数
+	if req.ReceiverId <= 0 {
+		return nil, fmt.Errorf("无效的接收者ID")
+	}
 
-	return
+	if req.Size <= 0 || req.Size > 100 {
+		req.Size = 20 // 使用默认值
+	}
+
+	// TODO: 从数据库查询消息列表
+	// messages, hasMore, err := l.svcCtx.MessageModel.List(
+	//     l.ctx.Value("userId").(int64),
+	//     req.ReceiverId,
+	//     req.LastMessageId,
+	//     int(req.Size),
+	// )
+	// if err != nil {
+	//     return nil, err
+	// }
+
+	// 模拟返回数据
+	return &types.GetMessageListResp{
+		Messages: []types.Message{
+			{
+				Id:         1,
+				SenderId:   1,
+				ReceiverId: req.ReceiverId,
+				Content:    "你好",
+				Type:       1,
+				CreateTime: 1678900000,
+			},
+		},
+		HasMore: false,
+	}, nil
 }

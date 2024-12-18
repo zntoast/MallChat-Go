@@ -8,8 +8,8 @@
 ```go
 
     -- 生成api文件
-    goctl api go  -api .\app\user\api\usercenter.api --dir .\app\user\
-    j
+     goctl api go  -api .\app\api\mallchatgo.api --dir .\app\
+    
     -- 生成model文件
     goctl model mysql datasource -url="root:password@tcp(127.0.0.1)/mallchatgo" -table="*"  -dir="./app/user/model"
 

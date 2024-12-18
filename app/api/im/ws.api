@@ -1,0 +1,19 @@
+syntax = "v1"
+
+info (
+    title: "WebSocket服务"
+    desc: "WebSocket实时通讯"
+    author: "ZaiNeng"
+    email: "2878428463@qq.com"
+)
+
+@server(
+    prefix: capi/im
+    group: ws
+    middleware: Auth
+)
+service mallchatgo {
+    @doc "WebSocket连接"
+    @handler connect
+    get /ws
+} 
