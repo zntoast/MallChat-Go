@@ -11,11 +11,11 @@
      goctl api go  -api .\app\api\mallchatgo.api --dir .\app\
     
     -- 生成model文件
-    goctl model mysql datasource -url="root:password@tcp(127.0.0.1)/mallchatgo" -table="*"  -dir="./app/user/model"
+    goctl model mysql datasource -url="root:password@tcp(127.0.0.1)/mallchatgo" -table="*"  -dir="./app/internal/model"
 
-    -- 生成api文档(go install github.com/zeromicro/goctl-swagger@latest)
-    goctl api plugin -p goctl-swagger="swagger -filename user.json" --api .\app\user\api\usercenter.api --dir .
+    -- 生成api文档,需要工具(go install github.com/zeromicro/goctl-swagger@latest)
+    goctl api plugin -p goctl-swagger="swagger -filename mallchatgo.json" --api .\app\api\mallchatgo.api --dir .
 
     -- 启动项目
-    go run .\app\user\usercenter.go -f .\app\user\etc\usercenter.yaml
+    go run .\app\mallchatgo.go -f .\app\etc\mallchatgo.yaml
 ```

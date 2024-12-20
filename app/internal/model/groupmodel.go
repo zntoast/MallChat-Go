@@ -19,6 +19,7 @@ type (
 		GetMembers(groupId int64) ([]int64, error)
 		AddMember(groupId, userId int64) error
 		RemoveMember(groupId, userId int64) error
+		FindOneByGroupIdUserId(ctx context.Context, groupId int64, userId int64) (*GroupMember, error)
 	}
 
 	customGroupModel struct {
@@ -57,4 +58,14 @@ func (m *customGroupModel) RemoveMember(groupId, userId int64) error {
 		return conn.ExecCtx(ctx, query, groupId, userId)
 	})
 	return err
+}
+
+func (m *customGroupModel) FindOneByGroupIdUserId(ctx context.Context, groupId int64, userId int64) (*GroupMember, error) {
+	var member GroupMember
+	query := `select * from group_member where group_id = ? and user_id = ?`
+	err := m.CachedConn.QueryRowNoCacheCtx(ctx, &member, query, groupId, userId)
+	if err != nil {
+		return nil, err
+	}
+	return &member, nil
 }

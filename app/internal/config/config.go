@@ -25,5 +25,5 @@ type Config struct {
 		Bucket       string
 		BucketDomain string // 用于生成访问URL
 	}
-	Cache cache.ClusterConf
+	CacheRedis cache.ClusterConf
 }

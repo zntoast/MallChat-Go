@@ -41,7 +41,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		panic(err)
 	}
 
-	cacheConf := c.Cache
+	cacheConf := c.CacheRedis
 	models := model.NewModels(
 		model.NewGroupModel(conn, cacheConf),
 		model.NewOfflineMessageModel(conn, cacheConf),

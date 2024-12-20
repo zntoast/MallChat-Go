@@ -3,10 +3,11 @@ package login
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"mallchat-go/app/internal/logic/login"
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 // register

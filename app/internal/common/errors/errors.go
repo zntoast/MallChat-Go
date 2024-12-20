@@ -1,6 +1,10 @@
 package errors
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/zeromicro/go-zero/core/logx"
+)
 
 // 定义错误码
 const (
@@ -18,7 +22,7 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	return fmt.Sprintf("错误码：%d，错误信息：%s", e.Code, e.Message)
+	return fmt.Sprintf("{ErrCode:%d,ErrMsg:%s}", e.Code, e.Message)
 }
 
 // New 创建新的错误
@@ -27,6 +31,12 @@ func New(code int, message string) *Error {
 		Code:    code,
 		Message: message,
 	}
+}
+
+func Warp(code int, err error, message string) *Error {
+	e := New(code, message)
+	logx.ErrorStack(e, e.Error())
+	return e
 }
 
 // NewValidationError 创建验证错误

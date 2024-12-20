@@ -3,10 +3,11 @@ package user
 import (
 	"net/http"
 
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"mallchat-go/app/internal/logic/user"
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
+
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 // 上传头像

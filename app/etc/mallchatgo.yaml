@@ -26,3 +26,8 @@ Log:
   Encoding: json
   Level: info
   Path: logs 
+
+CacheRedis: 
+    - Host: 127.0.0.2
+      port: 6379
+      type: node
