@@ -10,6 +10,7 @@ CREATE TABLE `black` (
 
 -- 用户IP信息表
 CREATE TABLE `ip_detail` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'IP详情ID',
   `ip` varchar(255) NOT NULL COMMENT '注册时的ip',
   `isp` varchar(255) COMMENT '最新登录的ip',
   `isp_id` varchar(255) COMMENT 'ISP ID',
@@ -19,16 +20,17 @@ CREATE TABLE `ip_detail` (
   `country_id` varchar(255) COMMENT '国家ID',
   `region` varchar(255) COMMENT '地区',
   `region_id` varchar(255) COMMENT '地区ID',
-  PRIMARY KEY (`ip`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户IP信息表';
 
 -- 用户IP信息表
 CREATE TABLE `ip_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'IP信息ID',
   `create_ip` varchar(255) NOT NULL COMMENT '注册时的ip',
   `create_ip_detail` bigint(20) COMMENT '注册时的ip详情ID',
   `update_ip` varchar(255) COMMENT '最新登录的ip',
   `update_ip_detail` bigint(20) COMMENT '最新登录的ip详情ID',
-  PRIMARY KEY (`create_ip`),
+  PRIMARY KEY (`id`),
   FOREIGN KEY (`create_ip_detail`) REFERENCES `ip_detail`(`id`),
   FOREIGN KEY (`update_ip_detail`) REFERENCES `ip_detail`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户IP信息表';
@@ -127,4 +129,3 @@ CREATE TABLE `user_role` (
   `update_time` datetime NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户角色关系表';
-
