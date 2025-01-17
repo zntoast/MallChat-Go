@@ -5,7 +5,8 @@ import "github.com/zeromicro/go-zero/rest"
 type Config struct {
 	rest.RestConf
 	MysqlDb struct {
-		DataSource string
-		AutoPing   bool
+		DataSource             string
+		AutoPing               bool
+		SkipDefaultTransaction bool //
 	}
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/zeromicro/go-zero/rest"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type ServiceContext struct {
@@ -31,6 +32,7 @@ func (s *ServiceContext) IninMysqlDB() {
 	}
 	db, err := gorm.Open(mysql.Open(s.Config.MysqlDb.DataSource), &gorm.Config{
 		DisableAutomaticPing: s.Config.MysqlDb.AutoPing,
+		Logger:               logger.Default,
 	})
 	if err != nil {
 		s.Err = fmt.Errorf("failed to connect database, err: %v", err)

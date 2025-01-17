@@ -8,14 +8,19 @@ info(
 )
 
 type (
-	 UserInfoResp {
-		id int64
-		username string
-		mobile string
+	UserInfoResp {
+		Id           uint   `json:"id"`
+		Name         string `json:"name"`
+		Mobile       string `json:"mobile"`
+		Avatar       string `json:"avatar"`
+		Sex          int    `json:"sex"`
+		ActiveStatus int    `json:"active_status"`
+		ItemID       int64  `json:"item_id"`
+		Status       int    `json:"status"`
 	}
 
 	UserInfoReq {
-		uid string
+		Uid string `url:"uid"`
 	}
 )
 

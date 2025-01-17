@@ -4,11 +4,16 @@
 package types
 
 type UserInfoReq struct {
-	Uid string
+	Uid string `url:"uid"`
 }
 
 type UserInfoResp struct {
-	Id       int64
-	Username string
-	Mobile   string
+	Id           uint   `json:"id"`
+	Name         string `json:"name"`
+	Mobile       string `json:"mobile"`
+	Avatar       string `json:"avatar"`
+	Sex          int    `json:"sex"`
+	ActiveStatus int    `json:"active_status"`
+	ItemID       int64  `json:"item_id"`
+	Status       int    `json:"status"`
 }

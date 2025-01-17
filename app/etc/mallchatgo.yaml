@@ -1,9 +1,11 @@
 Name: mallchatgo
 Host: 0.0.0.0
+Timeout: 10000
 Port: 8888
 MysqlDb:
   DataSource: root:DW6RYwu2kqJ2@tcp(172.16.10.22:3306)/mallchatgo?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
   AutoPing: true
+  SkipDefaultTransaction : true
 
 Cache:
   - Host: 127.0.0.1:6379

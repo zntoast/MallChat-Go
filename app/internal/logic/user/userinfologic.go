@@ -2,11 +2,15 @@ package user
 
 import (
 	"context"
+	"errors"
 
+	modelUser "mallchat-go/app/internal/model/user"
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
 
+	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
+	"gorm.io/gorm"
 )
 
 type UserInfoLogic struct {
@@ -25,7 +29,16 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 }
 
 func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoResp, err error) {
-	// todo: add your logic here and delete this line
-
+	user := modelUser.User{}
+	err = l.svcCtx.Db.First(&user).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return
+		}
+		logx.ErrorStack("UserInfo error ", err)
+		return
+	}
+	resp = new(types.UserInfoResp)
+	copier.Copy(resp, user)
 	return
 }
