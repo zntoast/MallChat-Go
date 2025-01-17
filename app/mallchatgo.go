@@ -9,6 +9,7 @@ import (
 	"mallchat-go/app/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 )
 
@@ -25,6 +26,11 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
+	ctx.IninMysqlDB() // 初始化mysql连接
+	if ctx.Err != nil {
+		logx.ErrorStack("Starting server error ", ctx.Err)
+		return
+	}
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()
