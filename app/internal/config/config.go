@@ -9,4 +9,8 @@ type Config struct {
 		AutoPing               bool
 		SkipDefaultTransaction bool //
 	}
+	Auth struct {
+		AccessSecret string
+		AccessExpire int64
+	}
 }

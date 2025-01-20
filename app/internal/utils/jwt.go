@@ -7,46 +7,13 @@ import (
 )
 
 type Claims struct {
-	UserId int64 `json:"userId"`
+	UserId int64
 	jwt.RegisteredClaims
 }
 
-type JWTUtils struct {
-	secretKey []byte
-}
-
-func NewJWTUtils(secretKey string) *JWTUtils {
-	return &JWTUtils{
-		secretKey: []byte(secretKey),
-	}
-}
-
-func (j *JWTUtils) GenerateToken(userId int64) (string, int64, int64, error) {
-	now := time.Now()
-	expireTime := now.Add(2 * time.Hour)
-	refreshTime := now.Add(1 * time.Hour)
-
-	claims := Claims{
-		userId,
-		jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expireTime),
-			IssuedAt:  jwt.NewNumericDate(now),
-			NotBefore: jwt.NewNumericDate(now),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokenString, err := token.SignedString(j.secretKey)
-	if err != nil {
-		return "", 0, 0, err
-	}
-
-	return tokenString, expireTime.Unix(), refreshTime.Unix(), nil
-}
-
-func (j *JWTUtils) ParseToken(tokenString string) (*Claims, error) {
+func ParseToken(tokenString string, secret string) (*Claims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
-		return j.secretKey, nil
+		return []byte(secret), nil
 	})
 
 	if err != nil {
@@ -58,4 +25,20 @@ func (j *JWTUtils) ParseToken(tokenString string) (*Claims, error) {
 	}
 
 	return nil, jwt.ErrSignatureInvalid
+}
+
+func GenerateToken(secret string, userId int64, expireTime time.Duration) (string, int64, error) {
+	expireAt := time.Now().Add(expireTime)
+	claims := Claims{
+		UserId: userId,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expireAt),
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			NotBefore: jwt.NewNumericDate(time.Now()),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenString, err := token.SignedString([]byte(secret))
+	return tokenString, expireAt.Unix(), err
 }
