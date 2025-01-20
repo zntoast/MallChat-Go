@@ -22,6 +22,10 @@ type (
 	UserInfoReq {
 		UserId int64 `form:"user_id"`
 	}
+
+	modifyNameReq {
+		Name   string `json:"name"`
+	}
 )
 
 @server(
@@ -33,4 +37,8 @@ service mallchatgo {
 	@doc "用户详情"
 	@handler userInfo
 	get /userInfo (UserInfoReq) returns (UserInfoResp)
+
+	@doc "修改用户名"
+	@handler modifyName
+	put /name (modifyNameReq) returns ()
 }

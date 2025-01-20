@@ -1,11 +1,14 @@
 package svc
 
 import (
+	"context"
 	"fmt"
 	"mallchat-go/app/internal/config"
 	"mallchat-go/app/internal/middleware"
 	modelUser "mallchat-go/app/internal/model/user"
+	"mallchat-go/app/internal/utils"
 
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -13,10 +16,11 @@ import (
 )
 
 type ServiceContext struct {
-	Config config.Config
-	Auth   rest.Middleware
-	Db     *gorm.DB
-	Err    error
+	Config   config.Config
+	Auth     rest.Middleware
+	RedisCli *utils.RedisClient
+	Db       *gorm.DB
+	Err      error
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -56,4 +60,15 @@ func (s *ServiceContext) IninMysqlDB() {
 		return
 	}
 	s.Db = db
+}
+
+func (s *ServiceContext) InitRedis() {
+	if s.Err != nil {
+		return
+	}
+	s.RedisCli = utils.NewRedisClient(s.Config.Redis.Host, s.Config.Redis.Pass, 0)
+	err := s.RedisCli.Ping(context.Background())
+	if err != nil {
+		logx.Error("failed to connect redis, err: ", err)
+	}
 }

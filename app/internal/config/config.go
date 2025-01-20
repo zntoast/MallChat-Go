@@ -9,6 +9,10 @@ type Config struct {
 		AutoPing               bool
 		SkipDefaultTransaction bool //
 	}
+	Redis struct {
+		Host string
+		Pass string
+	}
 	Auth struct {
 		AccessSecret string
 		AccessExpire int64

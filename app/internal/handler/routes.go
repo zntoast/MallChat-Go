@@ -18,6 +18,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.Auth},
 			[]rest.Route{
 				{
+					// 修改用户名
+					Method:  http.MethodPut,
+					Path:    "/name",
+					Handler: user.ModifyNameHandler(serverCtx),
+				},
+				{
 					// 用户详情
 					Method:  http.MethodGet,
 					Path:    "/userInfo",

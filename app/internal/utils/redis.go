@@ -16,7 +16,7 @@ func NewRedisClient(host, password string, db int) *RedisClient {
 	client := redis.NewClient(&redis.Options{
 		Addr:     host,
 		Password: password,
-		DB:       db,
+		// DB:       db,
 	})
 
 	return &RedisClient{
@@ -58,4 +58,9 @@ func (r *RedisClient) GetUserToken(ctx context.Context, userId int64) (string, e
 func (r *RedisClient) DelUserToken(ctx context.Context, userId int64) error {
 	key := fmt.Sprintf("user_token:%d", userId)
 	return r.client.Del(ctx, key).Err()
+}
+
+// ping 测试redis连接
+func (r *RedisClient) Ping(ctx context.Context) error {
+	return r.client.Ping(ctx).Err()
 }

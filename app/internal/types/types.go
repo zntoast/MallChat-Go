@@ -17,3 +17,7 @@ type UserInfoResp struct {
 	ItemID       int64  `json:"item_id"`
 	Status       int    `json:"status"`
 }
+
+type ModifyNameReq struct {
+	Name string `json:"name"`
+}
