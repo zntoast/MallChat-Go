@@ -20,7 +20,7 @@ type (
 	}
 
 	UserInfoReq {
-		Uid string `url:"uid"`
+		Uid int64 `form:"uid"`
 	}
 )
 

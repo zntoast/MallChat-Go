@@ -30,7 +30,7 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 
 func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoResp, err error) {
 	user := modelUser.User{}
-	err = l.svcCtx.Db.First(&user).Error
+	err = l.svcCtx.Db.Where("id = ?", req.Uid).First(&user).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return

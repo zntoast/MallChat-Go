@@ -4,7 +4,7 @@
 package types
 
 type UserInfoReq struct {
-	Uid string `url:"uid"`
+	Uid int64 `form:"uid"`
 }
 
 type UserInfoResp struct {
