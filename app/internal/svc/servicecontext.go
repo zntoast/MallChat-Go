@@ -6,7 +6,7 @@ import (
 	"mallchat-go/app/internal/config"
 	"mallchat-go/app/internal/middleware"
 	modelUser "mallchat-go/app/internal/model/user"
-	"mallchat-go/app/internal/utils"
+	"mallchat-go/app/internal/pkg/utils"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
