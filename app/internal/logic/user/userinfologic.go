@@ -2,15 +2,15 @@ package user
 
 import (
 	"context"
-	"errors"
+	"net/http"
 
+	"mallchat-go/app/internal/ercode"
 	modelUser "mallchat-go/app/internal/model/user"
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
 
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
-	"gorm.io/gorm"
 )
 
 type UserInfoLogic struct {
@@ -32,11 +32,7 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 	user := modelUser.User{}
 	err = l.svcCtx.Db.Where("id = ?", req.UserId).First(&user).Error
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return
-		}
-		logx.ErrorStack("UserInfo error ", err)
-		return
+		return nil, ercode.New(http.StatusNotFound, err.Error())
 	}
 	resp = new(types.UserInfoResp)
 	copier.Copy(resp, user)

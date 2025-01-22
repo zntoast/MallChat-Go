@@ -23,3 +23,6 @@ Upload:
   SaveDir: ./uploads
   MaxSize: 5  # 5MB
   BaseUrl: http://localhost:8888/static
+
+
+FilterFile: ./static/sensitive.txt

@@ -8,6 +8,7 @@ import (
 	modelUser "mallchat-go/app/internal/model/user"
 	"mallchat-go/app/internal/pkg/utils"
 
+	"github.com/importcjj/sensitive"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest"
 	"gorm.io/driver/mysql"
@@ -19,6 +20,7 @@ type ServiceContext struct {
 	Config   config.Config
 	Auth     rest.Middleware
 	RedisCli *utils.RedisClient
+	Filter   *sensitive.Filter
 	Db       *gorm.DB
 	Err      error
 }
@@ -70,5 +72,16 @@ func (s *ServiceContext) InitRedis() {
 	err := s.RedisCli.Ping(context.Background())
 	if err != nil {
 		logx.Error("failed to connect redis, err: ", err)
+	}
+}
+
+func (s *ServiceContext) InitFilterFile() {
+	if s.Err != nil {
+		return
+	}
+	s.Filter = sensitive.New()
+	err := s.Filter.LoadWordDict(s.Config.FilterFile)
+	if err != nil {
+		logx.Error("failed to load filter file, err: ", err)
 	}
 }

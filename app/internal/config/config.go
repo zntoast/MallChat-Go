@@ -7,7 +7,7 @@ type Config struct {
 	MysqlDb struct {
 		DataSource             string
 		AutoPing               bool
-		SkipDefaultTransaction bool //
+		SkipDefaultTransaction bool
 	}
 	Redis struct {
 		Host string
@@ -17,4 +17,5 @@ type Config struct {
 		AccessSecret string
 		AccessExpire int64
 	}
+	FilterFile string
 }

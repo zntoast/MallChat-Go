@@ -31,6 +31,11 @@ func (l *ModifyNameLogic) ModifyName(req *types.ModifyNameReq) error {
 	userId := middleware.GetAuthRespFromCtx(l.ctx)
 	// 检验用户名是否合法
 
+	has, _ := l.svcCtx.Filter.FindIn(newName)
+	if has {
+		return fmt.Errorf("包含违禁词，请修改用户名~~")
+	}
+
 	// 检验用户名是否存在
 	var count int64 = 0
 	err := l.svcCtx.Db.Where("name = ? and id <>?", newName, userId).Count(&count).Error
