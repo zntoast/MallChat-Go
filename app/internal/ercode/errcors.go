@@ -6,6 +6,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/zap"
 	"go.uber.org/zap/buffer"
 	"go.uber.org/zap/zapcore"
@@ -114,12 +115,24 @@ func (err *errorEntry) Error() string {
 	return buf.String()
 }
 
-func New(code int, message string, detail ...zap.Field) error {
+func New(code int, msg string, detail ...zap.Field) error {
+	if len(msg) == 0 {
+		return nil
+	}
 	return &errorEntry{
 		code:    code,
-		message: message,
+		message: msg,
 		detail:  detail,
 	}
+}
+
+func Wrap(code int, err error, detail ...zap.Field) error {
+	if err == nil {
+		return nil
+	}
+	err = New(code, err.Error(), detail...)
+	logx.ErrorStack(err)
+	return err
 }
 
 func (e *errorEntry) marshalJSON(printer *message.Printer, buf *buffer.Buffer) {
