@@ -41,4 +41,8 @@ service mallchatgo {
 	@doc "修改用户名"
 	@handler modifyName
 	put /name (modifyNameReq) returns ()
+
+	@doc "佩戴徽章"
+	@handler wearingBadge
+	put /badge () returns ()
 }

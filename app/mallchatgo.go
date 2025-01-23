@@ -30,7 +30,7 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
-	ctx.IninMysqlDB()    // 初始化mysql连接
+	// ctx.IninMysqlDB()    // 初始化mysql连接
 	ctx.InitRedis()      // 初始化redis连接
 	ctx.InitFilterFile() // 初始化过滤词库
 	if ctx.Err != nil {

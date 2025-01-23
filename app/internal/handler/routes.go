@@ -18,6 +18,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			[]rest.Middleware{serverCtx.Auth},
 			[]rest.Route{
 				{
+					// 佩戴徽章
+					Method:  http.MethodPut,
+					Path:    "/badge",
+					Handler: user.WearingBadgeHandler(serverCtx),
+				},
+				{
 					// 修改用户名
 					Method:  http.MethodPut,
 					Path:    "/name",
