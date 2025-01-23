@@ -2,17 +2,11 @@ package user
 
 import (
 	"context"
-	"net/http"
 
-	"mallchat-go/app/internal/ercode"
-	"mallchat-go/app/internal/middleware"
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
 
-	modelUser "mallchat-go/app/internal/model/user"
-
 	"github.com/zeromicro/go-zero/core/logx"
-	"go.uber.org/zap"
 )
 
 type ModifyNameLogic struct {
@@ -31,29 +25,29 @@ func NewModifyNameLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Modify
 }
 
 func (l *ModifyNameLogic) ModifyName(req *types.ModifyNameReq) error {
-	newName := req.Name
-	userId := middleware.GetAuthRespFromCtx(l.ctx)
-	// 检验用户名是否合法
+	// newName := req.Name
+	// userId := middleware.GetAuthRespFromCtx(l.ctx)
+	// // 检验用户名是否合法
 
-	has, _ := l.svcCtx.Filter.FindIn(newName)
-	if has {
-		return ercode.New(http.StatusBadRequest, "包含违禁词，请修改用户名~~")
-	}
+	// has, _ := l.svcCtx.Filter.FindIn(newName)
+	// if has {
+	// 	return ercode.New(http.StatusBadRequest, "包含违禁词，请修改用户名~~")
+	// }
 
 	// 检验用户名是否存在
-	var count int64 = 0
-	err := l.svcCtx.Db.Model(modelUser.User{}).Where("name = ? and id <>?", newName, userId).Count(&count).Error
-	if err != nil {
-		return ercode.New(http.StatusInternalServerError, "系统错误，请稍后再试~~", zap.Error(err))
-	}
+	// var count int64 = 0
+	// err := l.svcCtx.Db.Model(modelUser.User{}).Where("name = ? and id <>?", newName, userId).Count(&count).Error
+	// if err != nil {
+	// 	return ercode.New(http.StatusInternalServerError, "系统错误，请稍后再试~~", zap.Error(err))
+	// }
 
-	if count > 0 {
-		return ercode.New(http.StatusBadRequest, "用户名已存在，请修改用户名~~")
-	}
+	// if count > 0 {
+	// 	return ercode.New(http.StatusBadRequest, "用户名已存在，请修改用户名~~")
+	// }
 
-	err = l.svcCtx.Db.Model(modelUser.User{}).Where("id = ?", userId).Update("name", newName).Error
-	if err != nil {
-		return ercode.New(http.StatusInternalServerError, "系统错误，请稍后再试~~", zap.Error(err))
-	}
+	// err = l.svcCtx.Db.Model(modelUser.User{}).Where("id = ?", userId).Update("name", newName).Error
+	// if err != nil {
+	// 	return ercode.New(http.StatusInternalServerError, "系统错误，请稍后再试~~", zap.Error(err))
+	// }
 	return nil
 }
