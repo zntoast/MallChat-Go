@@ -32,5 +32,5 @@ func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoRe
 	// }
 	// resp = new(types.UserInfoResp)
 	// copier.Copy(resp, user)
-	// return
+	return
 }

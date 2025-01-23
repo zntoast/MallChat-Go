@@ -6,19 +6,16 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/golang-jwt/jwt/v4 v4.5.1
 	github.com/importcjj/sensitive v0.0.0-20200106142752-42d1c505be7b
-	github.com/jinzhu/copier v0.4.0
 	github.com/pkg/errors v0.8.1
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/xuri/excelize/v2 v2.9.0
 	github.com/zeromicro/go-zero v1.7.4
 	go.uber.org/zap v1.24.0
 	golang.org/x/text v0.21.0
-	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.12
 )
 
 require (
-	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -26,7 +23,6 @@ require (
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
-	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
