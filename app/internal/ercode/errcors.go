@@ -101,13 +101,13 @@ func (fs Fields) marshalJSON(buf *buffer.Buffer) {
 
 }
 
-type errorEntry struct {
-	code    int
+type ErrorEntry struct {
+	code    uint32
 	message string
 	detail  Fields
 }
 
-func (err *errorEntry) Error() string {
+func (err *ErrorEntry) Error() string {
 	buf := errBuffer.Get()
 	defer buf.Free()
 	p := message.NewPrinter(language.English)
@@ -115,18 +115,18 @@ func (err *errorEntry) Error() string {
 	return buf.String()
 }
 
-func New(code int, msg string, detail ...zap.Field) error {
+func New(code uint32, msg string, detail ...zap.Field) error {
 	if len(msg) == 0 {
 		return nil
 	}
-	return &errorEntry{
+	return &ErrorEntry{
 		code:    code,
 		message: msg,
 		detail:  detail,
 	}
 }
 
-func Wrap(code int, err error, detail ...zap.Field) error {
+func Wrap(code uint32, err error, detail ...zap.Field) error {
 	if err == nil {
 		return nil
 	}
@@ -135,7 +135,7 @@ func Wrap(code int, err error, detail ...zap.Field) error {
 	return err
 }
 
-func (e *errorEntry) marshalJSON(printer *message.Printer, buf *buffer.Buffer) {
+func (e *ErrorEntry) marshalJSON(printer *message.Printer, buf *buffer.Buffer) {
 	buf.AppendString(`{"code":`)
 	buf.AppendInt(int64(e.code))
 	buf.AppendString(`,"msg":"`)
@@ -151,6 +151,14 @@ func (e *errorEntry) marshalJSON(printer *message.Printer, buf *buffer.Buffer) {
 		buf.AppendByte('}')
 	}
 	buf.AppendByte('}')
+}
+
+func (e *ErrorEntry) GetErrCode() uint32 {
+	return e.code
+}
+
+func (e *ErrorEntry) GetErrMsg() string {
+	return e.message
 }
 
 func safeAddString(buf *buffer.Buffer, s string) {
@@ -337,18 +345,4 @@ func (ae *arrayEncoder) AppendObject(zapcore.ObjectMarshaler) error {
 
 func (ae *arrayEncoder) AppendReflected(value interface{}) error {
 	return nil
-}
-
-func GetCode(e error) int {
-	if x, ok := e.(*errorEntry); ok {
-		return x.code
-	}
-	return CodeUnknownError
-}
-
-func GetMessage(e error) string {
-	if x, ok := e.(*errorEntry); ok {
-		return x.message
-	}
-	return ""
 }
