@@ -2,10 +2,14 @@ package user
 
 import (
 	"context"
+	"net/http"
 
+	"mallchat-go/app/internal/ercode"
+	"mallchat-go/app/internal/middleware"
 	"mallchat-go/app/internal/svc"
 	"mallchat-go/app/internal/types"
 
+	"github.com/Masterminds/squirrel"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -25,25 +29,33 @@ func NewModifyNameLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Modify
 }
 
 func (l *ModifyNameLogic) ModifyName(req *types.ModifyNameReq) error {
-	// newName := req.Name
-	// userId := middleware.GetAuthRespFromCtx(l.ctx)
+	newName := req.Name
+	userId := middleware.GetAuthRespFromCtx(l.ctx)
 	// // 检验用户名是否合法
 
-	// has, _ := l.svcCtx.Filter.FindIn(newName)
-	// if has {
-	// 	return ercode.New(http.StatusBadRequest, "包含违禁词，请修改用户名~~")
-	// }
+	has, _ := l.svcCtx.Filter.FindIn(newName)
+	if has {
+		return ercode.New(http.StatusBadRequest, "包含违禁词，请修改用户名~~")
+	}
 
+	query := l.svcCtx.UserModel.SelectBuilder()
+	query.Where(
+		squirrel.And{
+			squirrel.Eq{"name": newName},
+			squirrel.NotEq{"id": userId},
+		},
+	)
 	// 检验用户名是否存在
-	// var count int64 = 0
-	// err := l.svcCtx.Db.Model(modelUser.User{}).Where("name = ? and id <>?", newName, userId).Count(&count).Error
-	// if err != nil {
-	// 	return ercode.New(http.StatusInternalServerError, "系统错误，请稍后再试~~", zap.Error(err))
-	// }
+	count, err := l.svcCtx.UserModel.FindCount(l.ctx, query, "id")
+	if err != nil {
+		return ercode.NewSysError("")
+	}
 
-	// if count > 0 {
-	// 	return ercode.New(http.StatusBadRequest, "用户名已存在，请修改用户名~~")
-	// }
+	if count > 0 {
+		return ercode.New(http.StatusBadRequest, "用户名已存在，请修改用户名~~")
+	}
+
+	// l.svcCtx.UserModel.
 
 	// err = l.svcCtx.Db.Model(modelUser.User{}).Where("id = ?", userId).Update("name", newName).Error
 	// if err != nil {

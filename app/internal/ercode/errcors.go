@@ -3,6 +3,7 @@ package ercode
 import (
 	"encoding/json"
 	"math"
+	"net/http"
 	"time"
 	"unicode/utf8"
 
@@ -124,6 +125,14 @@ func New(code uint32, msg string, detail ...zap.Field) error {
 		message: msg,
 		detail:  detail,
 	}
+}
+
+func NewSysError(msg string, detail ...zap.Field) error {
+	if len(msg) == 0 {
+		msg = "系统内部错误,请稍后再试~"
+
+	}
+	return New(http.StatusInternalServerError, msg, detail...)
 }
 
 func Wrap(code uint32, err error, detail ...zap.Field) error {

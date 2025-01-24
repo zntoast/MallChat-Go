@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"context"
+	"mallchat-go/app/internal/model"
 	"mallchat-go/app/internal/pkg/utils"
 	"net/http"
 	"strings"
@@ -17,8 +18,8 @@ func NewAuthMiddleware(secret string) *AuthMiddleware {
 
 type AuthServiceResp struct{}
 
-func GetAuthRespFromCtx(ctx context.Context) int64 {
-	return ctx.Value(AuthServiceResp{}).(int64)
+func GetAuthRespFromCtx(ctx context.Context) model.Users {
+	return ctx.Value(AuthServiceResp{}).(model.Users)
 }
 
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
@@ -35,6 +36,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 		token := tokenParts[1]
+
 		claims, err := utils.ParseToken(token, m.secret)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusUnauthorized)

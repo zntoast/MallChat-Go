@@ -4,12 +4,13 @@ import (
 	"context"
 	"mallchat-go/app/internal/config"
 	"mallchat-go/app/internal/middleware"
+	"mallchat-go/app/internal/model"
 	"mallchat-go/app/internal/pkg/utils"
 
 	"github.com/importcjj/sensitive"
 	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/rest"
-	"gorm.io/gorm"
 )
 
 type ServiceContext struct {
@@ -17,48 +18,22 @@ type ServiceContext struct {
 	Auth     rest.Middleware
 	RedisCli *utils.RedisClient
 	Filter   *sensitive.Filter
-	Db       *gorm.DB
-	Err      error
+
+	UserModel   model.UsersModel
+	BlacksModel model.BlacksModel
+
+	Err error
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
+	dbconn := sqlx.NewMysql(c.MysqlDb.DataSource)
 	return &ServiceContext{
-		Config: c,
-		Auth:   middleware.NewAuthMiddleware(c.Auth.AccessSecret).Handle,
+		Config:      c,
+		Auth:        middleware.NewAuthMiddleware(c.Auth.AccessSecret).Handle,
+		UserModel:   model.NewUsersModel(dbconn),
+		BlacksModel: model.NewBlacksModel(dbconn),
 	}
 }
-
-// func (s *ServiceContext) IninMysqlDB() {
-// 	if s.Err != nil {
-// 		return
-// 	}
-// 	db, err := gorm.Open(mysql.Open(s.Config.MysqlDb.DataSource), &gorm.Config{
-// 		DisableAutomaticPing: s.Config.MysqlDb.AutoPing,
-// 		Logger:               logger.Default,
-// 	})
-// 	if err != nil {
-// 		s.Err = fmt.Errorf("failed to connect database, err: %v", err)
-// 		return
-// 	}
-// 	err = db.AutoMigrate(
-// 		modelUser.Black{},
-// 		modelUser.ItemConfig{},
-// 		modelUser.Role{},
-// 		modelUser.User{},
-// 		modelUser.UserApply{},
-// 		modelUser.UserBackpack{},
-// 		modelUser.UserEmoji{},
-// 		modelUser.UserFriend{},
-// 		modelUser.UserRole{},
-// 		modelUser.UserIPInfo{},
-// 		modelUser.IPDetail{},
-// 	)
-// 	if err != nil {
-// 		s.Err = fmt.Errorf("failed to migrate database, err: %v", err)
-// 		return
-// 	}
-// 	s.Db = db
-// }
 
 func (s *ServiceContext) InitRedis() {
 	if s.Err != nil {
