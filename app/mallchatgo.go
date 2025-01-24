@@ -6,6 +6,7 @@ import (
 
 	"mallchat-go/app/internal/config"
 	"mallchat-go/app/internal/handler"
+	"mallchat-go/app/internal/middleware"
 	"mallchat-go/app/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -26,9 +27,9 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
-	// ctx.IninMysqlDB()    // 初始化mysql连接
 	ctx.InitRedis()      // 初始化redis连接
 	ctx.InitFilterFile() // 初始化过滤词库
+	ctx.Auth = middleware.NewAuthMiddleware(ctx).Handle
 	if ctx.Err != nil {
 		logx.ErrorStack("Starting server error ", ctx.Err)
 		return

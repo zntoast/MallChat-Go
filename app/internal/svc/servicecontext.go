@@ -3,7 +3,6 @@ package svc
 import (
 	"context"
 	"mallchat-go/app/internal/config"
-	"mallchat-go/app/internal/middleware"
 	"mallchat-go/app/internal/model"
 	"mallchat-go/app/internal/pkg/utils"
 
@@ -27,12 +26,12 @@ type ServiceContext struct {
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	dbconn := sqlx.NewMysql(c.MysqlDb.DataSource)
-	return &ServiceContext{
+	svcCtx := &ServiceContext{
 		Config:      c,
-		Auth:        middleware.NewAuthMiddleware(c.Auth.AccessSecret).Handle,
 		UserModel:   model.NewUsersModel(dbconn),
 		BlacksModel: model.NewBlacksModel(dbconn),
 	}
+	return svcCtx
 }
 
 func (s *ServiceContext) InitRedis() {

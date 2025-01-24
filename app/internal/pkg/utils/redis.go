@@ -12,6 +12,11 @@ type RedisClient struct {
 	client *redis.Client
 }
 
+// GetClient returns the underlying redis client
+func (r *RedisClient) GetClient() *redis.Client {
+	return r.client
+}
+
 func NewRedisClient(host, password string, db int) *RedisClient {
 	client := redis.NewClient(&redis.Options{
 		Addr:     host,
