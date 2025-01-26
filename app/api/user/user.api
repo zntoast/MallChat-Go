@@ -26,6 +26,10 @@ type (
 	modifyNameReq {
 		Name   string `json:"name"`
 	}
+
+	wearingBadgeReq {
+		BadgeId int64 `json:"badge_id"`
+	}
 )
 
 @server(
@@ -44,5 +48,5 @@ service mallchatgo {
 
 	@doc "佩戴徽章"
 	@handler wearingBadge
-	put /badge () returns ()
+	put /badge (wearingBadgeReq) returns ()
 }

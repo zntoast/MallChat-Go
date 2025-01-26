@@ -19,3 +19,7 @@ type UserInfoResp struct {
 type ModifyNameReq struct {
 	Name string `json:"name"`
 }
+
+type WearingBadgeReq struct {
+	BadgeId int64 `json:"badge_id"`
+}

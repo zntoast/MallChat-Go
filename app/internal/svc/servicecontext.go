@@ -18,8 +18,10 @@ type ServiceContext struct {
 	RedisCli *utils.RedisClient
 	Filter   *sensitive.Filter
 
-	UserModel   model.UsersModel
-	BlacksModel model.BlacksModel
+	UserDb          model.UsersModel
+	UserBackpacksDb model.UserBackpacksModel
+	BlacksDb        model.BlacksModel
+	ItemConfigsDb   model.ItemConfigsModel
 
 	Err error
 }
@@ -27,9 +29,11 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	dbconn := sqlx.NewMysql(c.MysqlDb.DataSource)
 	svcCtx := &ServiceContext{
-		Config:      c,
-		UserModel:   model.NewUsersModel(dbconn),
-		BlacksModel: model.NewBlacksModel(dbconn),
+		Config:          c,
+		UserDb:          model.NewUsersModel(dbconn),
+		BlacksDb:        model.NewBlacksModel(dbconn),
+		UserBackpacksDb: model.NewUserBackpacksModel(dbconn),
+		ItemConfigsDb:   model.NewItemConfigsModel(dbconn),
 	}
 	return svcCtx
 }

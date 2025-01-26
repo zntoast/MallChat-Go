@@ -14,7 +14,7 @@ const (
 )
 
 func mapStatusCode(code uint32) int {
-	return int(code) + BaseCode
+	return int(code) / BaseCode
 }
 
 // http返回
@@ -35,13 +35,14 @@ func WriteError(w http.ResponseWriter, r *http.Request, e error) {
 		errmsg = err.GetErrMsg()
 	} else {
 		e = errors.Adapt(e)
-		errmsg = e.Error()
+		errmsg = "服务器开了点小差，请稍后再试"
 	}
 	logx.WithContext(r.Context()).Errorf("【API-ERR】 : %+v ", e)
-	httpx.WriteJson(w, mapStatusCode(uint32(errcode)), Error(uint32(errcode), errmsg))
+	httpStatus := mapStatusCode(uint32(errcode))
+	httpx.WriteJson(w, httpStatus, Error(uint32(errcode), errmsg))
 }
 
 // http 参数错误返回
 func ParamErrorResult(r *http.Request, w http.ResponseWriter, err error) {
-	httpx.WriteJson(w, http.StatusBadRequest, Error(uint32(errors.ErrStatusBadRequest), err.Error()))
+	httpx.WriteJson(w, mapStatusCode(uint32(errors.ErrStatusBadRequest)), Error(uint32(errors.ErrStatusBadRequest), err.Error()))
 }

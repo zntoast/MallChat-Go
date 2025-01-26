@@ -9,6 +9,8 @@ import (
 	"mallchat-go/app/internal/svc"
 	"net/http"
 	"strings"
+
+	"go.uber.org/zap"
 )
 
 type UserProvider interface {
@@ -29,8 +31,8 @@ func NewAuthMiddleware(svcCtx *svc.ServiceContext) *AuthMiddleware {
 
 type AuthServiceResp struct{}
 
-func GetAuthRespFromCtx(ctx context.Context) uint64 {
-	return ctx.Value(AuthServiceResp{}).(uint64)
+func GetAuthRespFromCtx(ctx context.Context) *model.Users {
+	return ctx.Value(AuthServiceResp{}).(*model.Users)
 }
 
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
@@ -55,7 +57,13 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		r2 := r.WithContext(context.WithValue(r.Context(), AuthServiceResp{}, uint64(claims.UserId)))
+		userPtr, err := m.svcCtx.UserDb.FindOne(r.Context(), uint64(claims.UserId))
+		if err != nil || userPtr == nil {
+			result.WriteError(w, r, errors.New(errors.ErrDataNotFound, "account is not exist", zap.Error(err)))
+			return
+		}
+
+		r2 := r.WithContext(context.WithValue(r.Context(), AuthServiceResp{}, userPtr))
 		next(w, r2)
 	}
 }

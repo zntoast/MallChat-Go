@@ -28,7 +28,7 @@ func NewUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserInfo
 }
 
 func (l *UserInfoLogic) UserInfo(req *types.UserInfoReq) (resp *types.UserInfoResp, err error) {
-	user, err := l.svcCtx.UserModel.FindOne(l.ctx, uint64(req.UserId))
+	user, err := l.svcCtx.UserDb.FindOne(l.ctx, uint64(req.UserId))
 	if err != nil {
 		return nil, errors.New(errors.SysDBError, "获取用户信息失败", zap.Error(err))
 	}
