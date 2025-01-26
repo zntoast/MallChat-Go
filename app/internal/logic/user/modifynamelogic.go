@@ -2,7 +2,7 @@ package user
 
 import (
 	"context"
-	"net/http"
+	"time"
 
 	"mallchat-go/app/internal/errors"
 	"mallchat-go/app/internal/middleware"
@@ -31,32 +31,41 @@ func NewModifyNameLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Modify
 
 func (l *ModifyNameLogic) ModifyName(req *types.ModifyNameReq) error {
 	newName := req.Name
-	user := middleware.GetAuthRespFromCtx(l.ctx)
-	// // 检验用户名是否合法
+	userId := middleware.GetAuthRespFromCtx(l.ctx)
 
+	// // 检验用户名是否合法
 	has, _ := l.svcCtx.Filter.FindIn(newName)
 	if has {
-		return errors.New(http.StatusBadRequest, "包含违禁词，请修改用户名~~")
+		return errors.New(errors.ErrStatusBadRequest, "包含违禁词，请修改用户名~~")
 	}
 
 	query := l.svcCtx.UserModel.SelectBuilder()
 	query.Where(
 		squirrel.And{
 			squirrel.Eq{"name": newName},
-			squirrel.NotEq{"id": user.Id},
+			squirrel.NotEq{"id": userId},
 		},
 	)
 	// 检验用户名是否存在
 	count, err := l.svcCtx.UserModel.FindCount(l.ctx, query, "id")
 	if err != nil {
-		return errors.New(errors.SysDBError, "查询用户名失败~", zap.Error(err))
+		return errors.New(errors.SysDBError, "系统内部错误", zap.Error(err))
 	}
 
 	if count > 0 {
-		return errors.New(http.StatusBadRequest, "用户名已存在，请修改用户名~~")
+		return errors.New(errors.ErrStatusBadRequest, "用户名已存在，请修改用户名~~")
+	}
+
+	user, err := l.svcCtx.UserModel.FindOne(l.ctx, userId)
+	if err != nil {
+		return errors.New(errors.SysDBError, "查询用户信息失败~", zap.Error(err))
+	}
+	if user == nil {
+		return errors.New(errors.ErrDataNotFound, "account is not exist", zap.Any("user_id", userId))
 	}
 
 	user.Name = newName
+	user.UpdatedAt = time.Now()
 	_, err = l.svcCtx.UserModel.Update(l.ctx, nil, user)
 	if err != nil {
 		return errors.New(errors.SysDBError, "更新用户名失败~", zap.Error(err))

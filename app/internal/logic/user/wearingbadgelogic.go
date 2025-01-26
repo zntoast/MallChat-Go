@@ -3,8 +3,9 @@ package user
 import (
 	"context"
 
-	"github.com/zeromicro/go-zero/core/logx"
 	"mallchat-go/app/internal/svc"
+
+	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type WearingBadgeLogic struct {
@@ -23,7 +24,6 @@ func NewWearingBadgeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Wear
 }
 
 func (l *WearingBadgeLogic) WearingBadge() error {
-	// todo: add your logic here and delete this line
 
 	return nil
 }

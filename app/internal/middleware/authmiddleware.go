@@ -29,8 +29,8 @@ func NewAuthMiddleware(svcCtx *svc.ServiceContext) *AuthMiddleware {
 
 type AuthServiceResp struct{}
 
-func GetAuthRespFromCtx(ctx context.Context) *model.Users {
-	return ctx.Value(AuthServiceResp{}).(*model.Users)
+func GetAuthRespFromCtx(ctx context.Context) uint64 {
+	return ctx.Value(AuthServiceResp{}).(uint64)
 }
 
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
@@ -55,13 +55,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		userPtr, err := m.svcCtx.UserModel.FindOne(r.Context(), uint64(claims.UserId))
-		if err != nil || userPtr == nil {
-			result.WriteError(w, r, errors.New(errors.ErrDataNotFound, "user not found"))
-			return
-		}
-
-		r2 := r.WithContext(context.WithValue(r.Context(), AuthServiceResp{}, userPtr))
+		r2 := r.WithContext(context.WithValue(r.Context(), AuthServiceResp{}, uint64(claims.UserId)))
 		next(w, r2)
 	}
 }
