@@ -35,6 +35,7 @@ func WriteError(w http.ResponseWriter, r *http.Request, e error) {
 		errmsg = err.GetErrMsg()
 	} else {
 		e = errors.Adapt(e)
+		errcode = errors.SysInternalError
 		errmsg = "服务器开了点小差，请稍后再试"
 	}
 	logx.WithContext(r.Context()).Errorf("【API-ERR】 : %+v ", e)
