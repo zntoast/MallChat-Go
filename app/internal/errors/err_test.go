@@ -1,9 +1,8 @@
-package ercode
+package errors
 
 import (
 	"errors"
 	"fmt"
-	"net/http"
 	"testing"
 
 	"go.uber.org/zap"
@@ -24,6 +23,6 @@ func TestFieldsMarshal(t *testing.T) {
 }
 
 func TestErrPrint(t *testing.T) {
-	err := New(http.StatusForbidden, "账号错误", zap.String("name", "错误"), zap.Error(errors.New("test error")))
+	err := New(ErrAUTHFAILED, "账号错误", zap.String("name", "错误"), zap.Error(errors.New("test error")))
 	fmt.Println(err)
 }

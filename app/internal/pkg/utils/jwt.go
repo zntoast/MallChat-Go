@@ -20,6 +20,12 @@ func ParseToken(tokenString string, secret string) (*Claims, error) {
 		return nil, err
 	}
 
+	// 判断tokens是否过期
+	tokenTime := token.Claims.(*Claims).ExpiresAt.Time
+	if time.Now().After(tokenTime) {
+		return nil, jwt.ErrTokenExpired
+	}
+
 	if claims, ok := token.Claims.(*Claims); ok && token.Valid {
 		return claims, nil
 	}

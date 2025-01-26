@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"context"
-	"errors"
-	"fmt"
+	"mallchat-go/app/internal/errors"
 	"mallchat-go/app/internal/model"
+	"mallchat-go/app/internal/pkg/common/result"
 	"mallchat-go/app/internal/pkg/utils"
 	"mallchat-go/app/internal/svc"
 	"net/http"
@@ -29,8 +29,8 @@ func NewAuthMiddleware(svcCtx *svc.ServiceContext) *AuthMiddleware {
 
 type AuthServiceResp struct{}
 
-func GetAuthRespFromCtx(ctx context.Context) model.Users {
-	return ctx.Value(AuthServiceResp{}).(model.Users)
+func GetAuthRespFromCtx(ctx context.Context) *model.Users {
+	return ctx.Value(AuthServiceResp{}).(*model.Users)
 }
 
 func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
@@ -38,36 +38,30 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		// Token validation
 		authHeader := r.Header.Get("Authorization")
 		if authHeader == "" {
-			writeError(w, http.StatusUnauthorized, errors.New("authorization header is required"))
+			result.WriteError(w, r, errors.New(errors.ErrAUTHFAILED, "Authorization header is missing"))
 			return
 		}
 
 		tokenParts := strings.Split(authHeader, " ")
 		if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
-			writeError(w, http.StatusUnauthorized, errors.New("invalid authorization header format"))
+			result.WriteError(w, r, errors.New(errors.ErrAUTHFAILED, "invalid authorization header format"))
 			return
 		}
 		token := tokenParts[1]
 
 		claims, err := utils.ParseToken(token, m.secret)
 		if err != nil {
-			writeError(w, http.StatusUnauthorized, fmt.Errorf("invalid token: %v", err))
+			result.WriteError(w, r, errors.New(errors.ErrAUTHFAILED, err.Error()))
 			return
 		}
 
-		userPtr, err := m.svcCtx.UserModel.GetUserById(r.Context(), uint64(claims.UserId))
+		userPtr, err := m.svcCtx.UserModel.FindOne(r.Context(), uint64(claims.UserId))
 		if err != nil || userPtr == nil {
-			writeError(w, http.StatusUnauthorized, errors.New("user not found"))
+			result.WriteError(w, r, errors.New(errors.ErrDataNotFound, "user not found"))
 			return
 		}
 
-		r2 := r.WithContext(context.WithValue(r.Context(), AuthServiceResp{}, *userPtr))
+		r2 := r.WithContext(context.WithValue(r.Context(), AuthServiceResp{}, userPtr))
 		next(w, r2)
 	}
-}
-
-func writeError(w http.ResponseWriter, code int, err error) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	w.Write([]byte(fmt.Sprintf(`{"error": "%s"}`, err.Error())))
 }

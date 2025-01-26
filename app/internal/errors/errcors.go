@@ -1,13 +1,11 @@
-package ercode
+package errors
 
 import (
 	"encoding/json"
 	"math"
-	"net/http"
 	"time"
 	"unicode/utf8"
 
-	"github.com/zeromicro/go-zero/core/logx"
 	"go.uber.org/zap"
 	"go.uber.org/zap/buffer"
 	"go.uber.org/zap/zapcore"
@@ -103,7 +101,7 @@ func (fs Fields) marshalJSON(buf *buffer.Buffer) {
 }
 
 type ErrorEntry struct {
-	code    uint32
+	code    ErrorCode
 	message string
 	detail  Fields
 }
@@ -116,7 +114,7 @@ func (err *ErrorEntry) Error() string {
 	return buf.String()
 }
 
-func New(code uint32, msg string, detail ...zap.Field) error {
+func New(code ErrorCode, msg string, detail ...zap.Field) error {
 	if len(msg) == 0 {
 		return nil
 	}
@@ -127,21 +125,23 @@ func New(code uint32, msg string, detail ...zap.Field) error {
 	}
 }
 
-func NewSysError(msg string, detail ...zap.Field) error {
-	if len(msg) == 0 {
-		msg = "系统内部错误,请稍后再试~"
-
-	}
-	return New(http.StatusInternalServerError, msg, detail...)
-}
-
-func Wrap(code uint32, err error, detail ...zap.Field) error {
+func Wrap(code ErrorCode, err error, detail ...zap.Field) error {
 	if err == nil {
 		return nil
 	}
 	err = New(code, err.Error(), detail...)
-	logx.ErrorStack(err)
 	return err
+}
+
+func Adapt(e error) error {
+	if e == nil {
+		return nil
+	}
+	err, ok := e.(*ErrorEntry)
+	if ok {
+		return err
+	}
+	return New(SysInternalError, e.Error())
 }
 
 func (e *ErrorEntry) marshalJSON(printer *message.Printer, buf *buffer.Buffer) {
@@ -162,7 +162,7 @@ func (e *ErrorEntry) marshalJSON(printer *message.Printer, buf *buffer.Buffer) {
 	buf.AppendByte('}')
 }
 
-func (e *ErrorEntry) GetErrCode() uint32 {
+func (e *ErrorEntry) GetErrCode() ErrorCode {
 	return e.code
 }
 
