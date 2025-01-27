@@ -22,6 +22,12 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 					Handler: user.WearingBadgeHandler(serverCtx),
 				},
 				{
+					// 可选徽章预览
+					Method:  http.MethodGet,
+					Path:    "/badges",
+					Handler: user.BadgesHandler(serverCtx),
+				},
+				{
 					// 修改用户名
 					Method:  http.MethodPut,
 					Path:    "/name",

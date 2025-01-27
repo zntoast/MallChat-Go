@@ -2,24 +2,40 @@
 package types
 
 type UserInfoReq struct {
-	UserId int64 `form:"user_id"`
+	UserId int64 `form:"user_id"` // 用户ID
 }
 
 type UserInfoResp struct {
-	Id           uint   `json:"id"`
-	Name         string `json:"name"`
-	Mobile       string `json:"mobile"`
-	Avatar       string `json:"avatar"`
-	Sex          int    `json:"sex"`
-	ActiveStatus int    `json:"active_status"`
-	ItemID       int64  `json:"item_id"`
-	Status       int    `json:"status"`
+	Id           uint   `json:"id"`            // 用户ID
+	Name         string `json:"name"`          // 用户名
+	Mobile       string `json:"mobile"`        // 手机号
+	Avatar       string `json:"avatar"`        // 头像URL
+	Sex          int    `json:"sex"`           // 性别 0-未知 1-男 2-女
+	ActiveStatus int    `json:"active_status"` // 活跃状态
+	ItemID       int64  `json:"item_id"`       // 当前佩戴物品ID
+	Status       int    `json:"status"`        // 用户状态
+}
+
+type BadgesItem struct {
+	Id       int64  `json:"id"`       // 徽章ID
+	Img      string `json:"img"`      // 徽章图片URL
+	Describe string `json:"describe"` // 徽章描述
+	Obtain   int64  `json:"obtain"`   // 是否拥有 0-未拥有 1-已拥有
+	Wearing  int64  `json:"wearing"`  // 是否佩戴 0-未佩戴 1-已佩戴
+}
+
+type BadgesItemsResp struct {
+	Items []BadgesItem `json:"items"` // 徽章列表
+}
+
+type BadgesReq struct {
+	Uid int64 `json:"uid"` // 用户ID
 }
 
 type ModifyNameReq struct {
-	Name string `json:"name"`
+	Name string `json:"name"` // 新用户名
 }
 
 type WearingBadgeReq struct {
-	BadgeId int64 `json:"badge_id"`
+	BadgeId int64 `json:"badge_id"` // 徽章ID
 }
